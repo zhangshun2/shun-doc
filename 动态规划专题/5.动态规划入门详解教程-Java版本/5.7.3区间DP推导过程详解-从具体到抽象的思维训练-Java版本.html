@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><title>Untitled</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted Grotesk:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="shun.doc"/><meta property="og:title" content="Untitled"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Untitled"/><meta name="twitter:description" content="5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 📋 为什么需要这个文档？ 很多同学在学习区间DP时会遇到这些困惑： 状态定义看起来很抽象，不知道怎么想出来的 状态转移方程的推导过程不清楚 不知道为什么要这样设计状态 计算顺序为什么是这样的？ 本文将通过具体的思维过程，一步步展示如何从零开始推导出区间DP的解法。 🎯 从一个具体例子开始 问题：判断字符串 “aba” 是否为回文 最直观的想法： // 方法1：直接比较 boolean isPalindrome(String s) { int lef..."/><meta property="og:description" content="5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 📋 为什么需要这个文档？ 很多同学在学习区间DP时会遇到这些困惑： 状态定义看起来很抽象，不知道怎么想出来的 状态转移方程的推导过程不清楚 不知道为什么要这样设计状态 计算顺序为什么是这样的？ 本文将通过具体的思维过程，一步步展示如何从零开始推导出区间DP的解法。 🎯 从一个具体例子开始 问题：判断字符串 “aba” 是否为回文 最直观的想法： // 方法1：直接比较 boolean isPalindrome(String s) { int lef..."/><meta property="og:image:alt" content="5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 📋 为什么需要这个文档？ 很多同学在学习区间DP时会遇到这些困惑： 状态定义看起来很抽象，不知道怎么想出来的 状态转移方程的推导过程不清楚 不知道为什么要这样设计状态 计算顺序为什么是这样的？ 本文将通过具体的思维过程，一步步展示如何从零开始推导出区间DP的解法。 🎯 从一个具体例子开始 问题：判断字符串 “aba” 是否为回文 最直观的想法： // 方法1：直接比较 boolean isPalindrome(String s) { int lef..."/><meta property="og:image" content="https://zhangshun2.github.io/shun-doc/static/og-image.png"/><meta property="og:image:url" content="https://zhangshun2.github.io/shun-doc/static/og-image.png"/><meta name="twitter:image" content="https://zhangshun2.github.io/shun-doc/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="zhangshun2.github.io/shun-doc"/><meta property="og:url" content="https://zhangshun2.github.io/shun-doc/动态规划专题/5.动态规划入门详解教程-Java版本/5.7.3区间DP推导过程详解-从具体到抽象的思维训练-Java版本"/><meta property="twitter:url" content="https://zhangshun2.github.io/shun-doc/动态规划专题/5.动态规划入门详解教程-Java版本/5.7.3区间DP推导过程详解-从具体到抽象的思维训练-Java版本"/><link rel="icon" href="../../static/icon.png"/><meta name="description" content="5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本 📋 为什么需要这个文档？ 很多同学在学习区间DP时会遇到这些困惑： 状态定义看起来很抽象，不知道怎么想出来的 状态转移方程的推导过程不清楚 不知道为什么要这样设计状态 计算顺序为什么是这样的？ 本文将通过具体的思维过程，一步步展示如何从零开始推导出区间DP的解法。 🎯 从一个具体例子开始 问题：判断字符串 “aba” 是否为回文 最直观的想法： // 方法1：直接比较 boolean isPalindrome(String s) { int lef..."/><meta name="generator" content="Quartz"/><link href="../../index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvc2h1bi5kb2MubGl0ZS9zaHVuLmRvYy5saXRlL3F1YXJ0ei9jb21wb25lbnRzL3N0eWxlcyIsInNvdXJjZXMiOlsibWVybWFpZC5pbmxpbmUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTs7O0FBS0Y7RUFDRTtFQUNBOzs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgdHJhbnNmb3JtLW9yaWdpbjogMCAwO1xuICAgICAgdHJhbnNpdGlvbjogdHJhbnNmb3JtIDAuMXMgZWFzZTtcbiAgICAgIG92ZXJmbG93OiB2aXNpYmxlO1xuICAgICAgbWluLWhlaWdodDogMjAwcHg7XG4gICAgICBtaW4td2lkdGg6IDIwMHB4O1xuXG4gICAgICBwcmUge1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgIH1cblxuICAgICAgc3ZnIHtcbiAgICAgICAgbWF4LXdpZHRoOiBub25lO1xuICAgICAgICBoZWlnaHQ6IGF1dG87XG4gICAgICB9XG4gICAgfVxuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRyb2xzIHtcbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIGJvdHRvbTogMjBweDtcbiAgICAgIHJpZ2h0OiAyMHB4O1xuICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgIGdhcDogOHB4O1xuICAgICAgcGFkZGluZzogOHB4O1xuICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgIGJvcmRlci1yYWRpdXM6IDZweDtcbiAgICAgIGJveC1zaGFkb3c6IDAgMnB4IDRweCByZ2JhKDAsIDAsIDAsIDAuMSk7XG4gICAgICB6LWluZGV4OiAyO1xuXG4gICAgICAubWVybWFpZC1jb250cm9sLWJ1dHRvbiB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogMzJweDtcbiAgICAgICAgaGVpZ2h0OiAzMnB4O1xuICAgICAgICBwYWRkaW5nOiAwO1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICAgIGNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNHB4O1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIGZvbnQtc2l6ZTogMTZweDtcbiAgICAgICAgZm9udC1mYW1pbHk6IHZhcigtLWJvZHlGb250KTtcbiAgICAgICAgdHJhbnNpdGlvbjogYWxsIDAuMnMgZWFzZTtcblxuICAgICAgICAmOmhvdmVyIHtcbiAgICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgICB9XG5cbiAgICAgICAgJjphY3RpdmUge1xuICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgxcHgpO1xuICAgICAgICB9XG5cbiAgICAgICAgLy8gU3R5bGUgdGhlIHJlc2V0IGJ1dHRvbiBkaWZmZXJlbnRseVxuICAgICAgICAmOm50aC1jaGlsZCgyKSB7XG4gICAgICAgICAgd2lkdGg6IGF1dG87XG4gICAgICAgICAgcGFkZGluZzogMCAxMnB4O1xuICAgICAgICAgIGZvbnQtc2l6ZTogMTRweDtcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH1cbiAgfVxufVxuIl19 */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="../../prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("../../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://zhangshun2.github.io/shun-doc/index.xml"/></head><body data-slug="动态规划专题/5.动态规划入门详解教程-Java版本/5.7.3区间DP推导过程详解-从具体到抽象的思维训练-Java版本"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="../..">shun.doc</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>Search</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="Reader mode"><title>Reader mode</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-68"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-68" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><p show-comma="true" class="content-meta"><time datetime="2026-01-21T07:36:33.000Z">Jan 21, 2026</time><span>22 min read</span></p></div></div><article class="popover-hint"><h1 id="573-区间dp推导过程详解-从具体到抽象的思维训练-java版本">5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#573-区间dp推导过程详解-从具体到抽象的思维训练-java版本" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h1 id="573-区间dp推导过程详解-从具体到抽象的思维训练-java版本-1">5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#573-区间dp推导过程详解-从具体到抽象的思维训练-java版本-1" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="-为什么需要这个文档">📋 为什么需要这个文档？<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-为什么需要这个文档" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>很多同学在学习区间DP时会遇到这些困惑：</p>
+<ul>
+<li>状态定义看起来很抽象，不知道怎么想出来的</li>
+<li>状态转移方程的推导过程不清楚</li>
+<li>不知道为什么要这样设计状态</li>
+<li>计算顺序为什么是这样的？</li>
+</ul>
+<p>本文将通过<strong>具体的思维过程</strong>，一步步展示如何从零开始推导出区间DP的解法。</p>
+<hr/>
+<h2 id="-从一个具体例子开始">🎯 从一个具体例子开始<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-从一个具体例子开始" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="问题判断字符串-aba-是否为回文">问题：判断字符串 “aba” 是否为回文<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#问题判断字符串-aba-是否为回文" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>最直观的想法：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 方法1：直接比较</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">boolean</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isPalindrome</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(String s) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> left </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">, right </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">length</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">() </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    while</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (left </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> right) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(left) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(right)) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">            return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        left</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        right</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">--</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>观察：</strong> 对于 “aba”，我们比较 s[0] 和 s[2]，发现相等，然后检查中间的 “b”。</p>
+<h3 id="关键洞察回文的递归性质">关键洞察：回文的递归性质<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#关键洞察回文的递归性质" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>思考过程：</strong></p>
+<ol>
+<li>要判断 “aba” 是否为回文</li>
+<li>首先检查首尾字符：a == a ✓</li>
+<li>然后检查去掉首尾后的子串：“b” 是否为回文 ✓</li>
+<li>所以 “aba” 是回文</li>
+</ol>
+<p><strong>递归关系发现：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>&quot;aba&quot; 是回文 ⟺ (a == a) &amp;&amp; (&quot;b&quot; 是回文)</span></span></code></pre></figure>
+<p><strong>一般化：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>s[i...j] 是回文 ⟺ (s[i] == s[j]) &amp;&amp; (s[i+1...j-1] 是回文)</span></span></code></pre></figure>
+<hr/>
+<h2 id="-从递归到动态规划的思维转换">🔍 从递归到动态规划的思维转换<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-从递归到动态规划的思维转换" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="第一步写出递归函数">第一步：写出递归函数<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第一步写出递归函数" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 最初的递归思路</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">boolean</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isP</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(String s, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j) {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 基础情况</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">>=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 空串或单字符</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    </span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 递归情况</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(j)) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isP</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(s, i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">, j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<h3 id="第二步发现重复子问题">第二步：发现重复子问题<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第二步发现重复子问题" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>例子：</strong> 对于字符串 “ababa”</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>检查 isP(0, 4): &quot;ababa&quot;</span></span>
+<span data-line><span>├── 需要 isP(1, 3): &quot;bab&quot;</span></span>
+<span data-line><span>│   ├── 需要 isP(2, 2): &quot;a&quot;</span></span>
+<span data-line><span>│   └── ...</span></span>
+<span data-line><span>└── ...</span></span>
+<span data-line> </span>
+<span data-line><span>检查 isP(1, 3): &quot;bab&quot; (重复计算！)</span></span>
+<span data-line><span>├── 需要 isP(2, 2): &quot;a&quot; (重复计算！)</span></span>
+<span data-line><span>└── ...</span></span></code></pre></figure>
+<p><strong>发现：</strong> 同样的子问题 <code>isP(i, j)</code> 会被重复计算多次。</p>
+<h3 id="第三步引入记忆化">第三步：引入记忆化<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第三步引入记忆化" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>什么是记忆化？</strong><br/>
+记忆化就是把计算过的结果保存起来，下次遇到同样的问题时直接返回结果，避免重复计算。</p>
+<p><strong>为什么需要记忆化？</strong><br/>
+让我们看一个具体例子，对于字符串 “ababa”：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>计算 isP(0, 4): &quot;ababa&quot;</span></span>
+<span data-line><span>├── 需要计算 isP(1, 3): &quot;bab&quot;</span></span>
+<span data-line><span>│   ├── 需要计算 isP(2, 2): &quot;a&quot; → 返回 true</span></span>
+<span data-line><span>│   └── 返回 true</span></span>
+<span data-line><span>└── 返回 true</span></span>
+<span data-line> </span>
+<span data-line><span>后来又要计算 isP(1, 3): &quot;bab&quot; (重复了！)</span></span>
+<span data-line><span>├── 又要计算 isP(2, 2): &quot;a&quot; (又重复了！)</span></span>
+<span data-line><span>└── ...</span></span></code></pre></figure>
+<p><strong>记忆化的工作原理：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 添加记忆化的递归</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">Boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">[][] memo;  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 用来保存已计算的结果</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">boolean</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isP</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(String s, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j) {</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 基础情况：空串或单字符一定是回文</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">>=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">return</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    </span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 🔍 关键步骤1：检查是否已经计算过</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (memo[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> null</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        System.out.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">println</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;直接返回已保存的结果: memo[&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;][&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;] = &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> memo[i][j]);</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> memo[i][j];  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 直接返回已计算的结果，不用重复计算</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    </span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 🔍 关键步骤2：第一次计算这个子问题</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    System.out.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">println</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;第一次计算: isP(&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;, &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;) = </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">substring</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i, j</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">\&quot;</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    boolean</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result;</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(j)) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        result </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> isP</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(s, i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">, j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 递归计算内部子串</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        result </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    </span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">    // 🔍 关键步骤3：保存计算结果</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    memo[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    System.out.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">println</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;保存结果: memo[&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;][&quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;"> &quot;] = &quot;</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    </span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> result;</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>执行过程演示（以”aba”为例）：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>初始状态：memo = [[null, null, null],</span></span>
+<span data-line><span>                  [null, null, null],</span></span>
+<span data-line><span>                  [null, null, null]]</span></span>
+<span data-line> </span>
+<span data-line><span>调用 isP(0, 2): &quot;aba&quot;</span></span>
+<span data-line><span>├── memo[0][2] == null，需要计算</span></span>
+<span data-line><span>├── s[0]='a', s[2]='a' 相等</span></span>
+<span data-line><span>├── 递归调用 isP(1, 1): &quot;b&quot;</span></span>
+<span data-line><span>│   ├── i >= j (1 >= 1)，返回 true</span></span>
+<span data-line><span>│   └── 不需要保存到memo（基础情况）</span></span>
+<span data-line><span>├── result = true</span></span>
+<span data-line><span>├── memo[0][2] = true  // 保存结果</span></span>
+<span data-line><span>└── 返回 true</span></span>
+<span data-line> </span>
+<span data-line><span>如果再次调用 isP(0, 2):</span></span>
+<span data-line><span>├── memo[0][2] != null (值为true)</span></span>
+<span data-line><span>├── 直接返回 true  // 不需要重复计算！</span></span>
+<span data-line><span>└── 节省了时间</span></span></code></pre></figure>
+<p><strong>记忆化的优势：</strong></p>
+<ol>
+<li><strong>避免重复计算</strong>：同样的子问题只计算一次</li>
+<li><strong>时间复杂度优化</strong>：从指数级降低到多项式级</li>
+<li><strong>保持递归结构</strong>：代码逻辑清晰，易于理解</li>
+</ol>
+<p><strong>记忆化 vs 普通递归：</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>方面</th><th>普通递归</th><th>记忆化递归</th></tr></thead><tbody><tr><td>重复计算</td><td>大量重复</td><td>避免重复</td></tr><tr><td>时间复杂度</td><td>O(2^n)</td><td>O(n²)</td></tr><tr><td>空间复杂度</td><td>O(n)</td><td>O(n²)</td></tr><tr><td>代码复杂度</td><td>简单</td><td>稍复杂</td></tr></tbody></table></div>
+<h3 id="第四步转换为自底向上的dp">第四步：转换为自底向上的DP<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第四步转换为自底向上的dp" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>思考：</strong> 既然我们要用表格保存结果，为什么不直接按顺序填表呢？</p>
+<p><strong>关键问题：</strong> 什么顺序填表？</p>
+<p><strong>依赖关系分析：</strong></p>
+<ul>
+<li><code>dp[i][j]</code> 依赖于 <code>dp[i+1][j-1]</code></li>
+<li>也就是说，计算 <code>(i,j)</code> 需要先知道 <code>(i+1,j-1)</code> 的结果</li>
+</ul>
+<p><strong>可视化依赖关系：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>    0  1  2  3  4</span></span>
+<span data-line><span>0   ●  ?  ?  ?  ?</span></span>
+<span data-line><span>1      ●  ?  ?  ?</span></span>
+<span data-line><span>2         ●  ?  ?</span></span>
+<span data-line><span>3            ●  ?</span></span>
+<span data-line><span>4               ●</span></span>
+<span data-line> </span>
+<span data-line><span>要计算 dp[0][4]，需要先知道 dp[1][3]</span></span>
+<span data-line><span>要计算 dp[1][3]，需要先知道 dp[2][2]</span></span>
+<span data-line><span>...</span></span></code></pre></figure>
+<p><strong>结论：</strong> 应该按<strong>区间长度从小到大</strong>的顺序计算！</p>
+<hr/>
+<h2 id="-状态定义的思维过程">💡 状态定义的思维过程<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-状态定义的思维过程" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="思维路径1从问题出发">思维路径1：从问题出发<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#思维路径1从问题出发" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>原问题：</strong> 找到最长的回文子串</p>
+<p><strong>分解思考：</strong></p>
+<ol>
+<li>我需要检查所有可能的子串</li>
+<li>对每个子串，判断是否为回文</li>
+<li>在所有回文子串中找最长的</li>
+</ol>
+<p><strong>状态设计：</strong></p>
+<ul>
+<li><code>dp[i][j]</code> = 子串 <code>s[i...j]</code> 是否为回文</li>
+<li>这样我可以检查所有子串的回文性质</li>
+</ul>
+<h3 id="思维路径2从递归关系出发">思维路径2：从递归关系出发<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#思维路径2从递归关系出发" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>递归关系：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>isP(i, j) = (s[i] == s[j]) &amp;&amp; isP(i+1, j-1)</span></span></code></pre></figure>
+<p><strong>状态设计：</strong></p>
+<ul>
+<li>递归函数的参数 <code>(i, j)</code> 自然成为状态的维度</li>
+<li><code>dp[i][j]</code> 对应 <code>isP(i, j)</code> 的返回值</li>
+</ul>
+<h3 id="思维路径3从子问题结构出发">思维路径3：从子问题结构出发<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#思维路径3从子问题结构出发" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>观察：</strong> 大的回文串包含小的回文串</p>
+<ul>
+<li>“abcba” 包含 “bcb”</li>
+<li>“bcb” 包含 “c”</li>
+</ul>
+<p><strong>状态设计：</strong></p>
+<ul>
+<li>用区间 <code>[i, j]</code> 表示子问题的范围</li>
+<li><code>dp[i][j]</code> 表示这个区间的性质（是否为回文）</li>
+</ul>
+<hr/>
+<h2 id="-状态转移方程的详细推导">🔄 状态转移方程的详细推导<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-状态转移方程的详细推导" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="第一步列出所有情况">第一步：列出所有情况<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第一步列出所有情况" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>对于子串 <code>s[i...j]</code>，有以下情况：</p>
+<ol>
+<li><strong>长度为1</strong>：<code>i == j</code>
+<ul>
+<li>单个字符总是回文</li>
+<li><code>dp[i][i] = true</code></li>
+</ul>
+</li>
+<li><strong>长度为2</strong>：<code>j == i + 1</code>
+<ul>
+<li>两个字符相同就是回文</li>
+<li><code>dp[i][i+1] = (s[i] == s[i+1])</code></li>
+</ul>
+</li>
+<li><strong>长度≥3</strong>：<code>j > i + 1</code>
+<ul>
+<li>需要检查首尾字符和内部子串</li>
+<li><code>dp[i][j] = (s[i] == s[j]) &amp;&amp; dp[i+1][j-1]</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="第二步合并边界情况">第二步：合并边界情况<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第二步合并边界情况" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>观察：</strong> 长度为2的情况可以合并到一般情况中</p>
+<p><strong>为什么？</strong></p>
+<ul>
+<li>当 <code>j == i + 1</code> 时，<code>dp[i+1][j-1] = dp[i+1][i] = true</code>（空区间）</li>
+<li>所以 <code>dp[i][j] = (s[i] == s[j]) &amp;&amp; true = (s[i] == s[j])</code></li>
+</ul>
+<p><strong>简化后的转移方程：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 单字符</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">} </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">else</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(j)) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 长度为2或3的特殊处理</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    } </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">];  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 一般情况</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">} </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 首尾不同</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<h3 id="第三步理解为什么需要特殊处理">第三步：理解为什么需要特殊处理<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第三步理解为什么需要特殊处理" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>问题：</strong> 为什么 <code>j - i &lt;= 2</code> 需要特殊处理？</p>
+<p><strong>具体分析：</strong></p>
+<ol>
+<li><strong>长度为2</strong>：<code>&quot;aa&quot;</code>
+<ul>
+<li><code>i = 0, j = 1</code></li>
+<li><code>dp[i+1][j-1] = dp[1][0]</code>（无效区间）</li>
+<li>需要特殊处理</li>
+</ul>
+</li>
+<li><strong>长度为3</strong>：<code>&quot;aba&quot;</code>
+<ul>
+<li><code>i = 0, j = 2</code></li>
+<li><code>dp[i+1][j-1] = dp[1][1] = true</code>（单字符）</li>
+<li>可以用一般公式，但为了代码简洁，统一特殊处理</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2 id="-计算顺序的可视化推导">📊 计算顺序的可视化推导<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-计算顺序的可视化推导" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="依赖关系图">依赖关系图<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#依赖关系图" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>对于5×5的DP表：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>      j→</span></span>
+<span data-line><span>   0  1  2  3  4</span></span>
+<span data-line><span>i 0  ●  ①  ②  ③  ④</span></span>
+<span data-line><span>↓ 1     ●  ①  ②  ③</span></span>
+<span data-line><span>  2        ●  ①  ②</span></span>
+<span data-line><span>  3           ●  ①</span></span>
+<span data-line><span>  4              ●</span></span></code></pre></figure>
+<p><strong>依赖关系：</strong></p>
+<ul>
+<li><code>dp[0][4]</code> 依赖 <code>dp[1][3]</code></li>
+<li><code>dp[1][3]</code> 依赖 <code>dp[2][2]</code></li>
+<li><code>dp[0][3]</code> 依赖 <code>dp[1][2]</code></li>
+<li><code>dp[1][2]</code> 依赖 <code>dp[2][1]</code>（无效，特殊处理）</li>
+</ul>
+<h3 id="计算顺序方案">计算顺序方案<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#计算顺序方案" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>方案1：按长度递增</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> len </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; len </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> n; len</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {        </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 长度从1到n</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> n </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> len; i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {    </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 起始位置</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> len </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;                </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 结束位置</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">        // 计算 dp[i][j]</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>执行顺序：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>长度1: dp[0][0], dp[1][1], dp[2][2], dp[3][3], dp[4][4]</span></span>
+<span data-line><span>长度2: dp[0][1], dp[1][2], dp[2][3], dp[3][4]</span></span>
+<span data-line><span>长度3: dp[0][2], dp[1][3], dp[2][4]</span></span>
+<span data-line><span>长度4: dp[0][3], dp[1][4]</span></span>
+<span data-line><span>长度5: dp[0][4]</span></span></code></pre></figure>
+<p><strong>方案2：按对角线</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> gap </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; gap </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> n; gap</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {         </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 对角线距离</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> gap </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> n; i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {     </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 起始位置</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">        int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> gap;                    </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 结束位置</span></span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">        // 计算 dp[i][j]</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>两种方案本质相同</strong>，都保证了依赖关系的正确性。</p>
+<hr/>
+<h2 id="-完整的思维过程演示">🎯 完整的思维过程演示<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-完整的思维过程演示" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="例子字符串-babad">例子：字符串 “babad”<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#例子字符串-babad" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>第一步：初始化DP表</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>    b  a  b  a  d</span></span>
+<span data-line><span>b   ?  ?  ?  ?  ?</span></span>
+<span data-line><span>a   ?  ?  ?  ?  ?</span></span>
+<span data-line><span>b   ?  ?  ?  ?  ?</span></span>
+<span data-line><span>a   ?  ?  ?  ?  ?</span></span>
+<span data-line><span>d   ?  ?  ?  ?  ?</span></span></code></pre></figure>
+<p><strong>第二步：填入长度为1的情况</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>    b  a  b  a  d</span></span>
+<span data-line><span>b   T  ?  ?  ?  ?</span></span>
+<span data-line><span>a   ?  T  ?  ?  ?</span></span>
+<span data-line><span>b   ?  ?  T  ?  ?</span></span>
+<span data-line><span>a   ?  ?  ?  T  ?</span></span>
+<span data-line><span>d   ?  ?  ?  ?  T</span></span></code></pre></figure>
+<p><strong>思考过程：</strong> 所有单字符都是回文，这是显而易见的。</p>
+<p><strong>第三步：填入长度为2的情况</strong></p>
+<ul>
+<li><code>dp[0][1]</code>：“ba” → b ≠ a → <code>false</code></li>
+<li><code>dp[1][2]</code>：“ab” → a ≠ b → <code>false</code></li>
+<li><code>dp[2][3]</code>：“ba” → b ≠ a → <code>false</code></li>
+<li><code>dp[3][4]</code>：“ad” → a ≠ d → <code>false</code></li>
+</ul>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>    b  a  b  a  d</span></span>
+<span data-line><span>b   T  F  ?  ?  ?</span></span>
+<span data-line><span>a   ?  T  F  ?  ?</span></span>
+<span data-line><span>b   ?  ?  T  F  ?</span></span>
+<span data-line><span>a   ?  ?  ?  T  F</span></span>
+<span data-line><span>d   ?  ?  ?  ?  T</span></span></code></pre></figure>
+<p><strong>思考过程：</strong> 检查相邻字符是否相同，都不相同，所以都是false。</p>
+<p><strong>第四步：填入长度为3的情况</strong></p>
+<ul>
+<li><code>dp[0][2]</code>：“bab” → b == b，长度≤3 → <code>true</code></li>
+<li><code>dp[1][3]</code>：“aba” → a == a，长度≤3 → <code>true</code></li>
+<li><code>dp[2][4]</code>：“bad” → b ≠ d → <code>false</code></li>
+</ul>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>    b  a  b  a  d</span></span>
+<span data-line><span>b   T  F  T  ?  ?</span></span>
+<span data-line><span>a   ?  T  F  T  ?</span></span>
+<span data-line><span>b   ?  ?  T  F  F</span></span>
+<span data-line><span>a   ?  ?  ?  T  F</span></span>
+<span data-line><span>d   ?  ?  ?  ?  T</span></span></code></pre></figure>
+<p><strong>思考过程：</strong></p>
+<ul>
+<li>“bab”：首尾都是b，相等，且长度为3，所以是回文</li>
+<li>“aba”：首尾都是a，相等，且长度为3，所以是回文</li>
+<li>“bad”：首尾不相等，所以不是回文</li>
+</ul>
+<p><strong>第五步：继续填入更长的情况</strong></p>
+<p>长度为4和5的都会是false，因为首尾字符不匹配。</p>
+<p><strong>第六步：提取结果</strong></p>
+<p>在计算过程中，我们发现了两个长度为3的回文：“bab” 和 “aba”。</p>
+<hr/>
+<h2 id="-深入理解为什么这样设计状态">🧠 深入理解：为什么这样设计状态？<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-深入理解为什么这样设计状态" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="状态设计的原则">状态设计的原则<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#状态设计的原则" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>完备性</strong>：状态能够表示所有可能的子问题</li>
+<li><strong>无重复</strong>：不同的状态表示不同的子问题</li>
+<li><strong>可计算</strong>：状态之间有明确的转移关系</li>
+<li><strong>最优性</strong>：状态设计要便于求解原问题</li>
+</ol>
+<h3 id="其他可能的状态设计">其他可能的状态设计<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#其他可能的状态设计" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>方案1：</strong> <code>dp[i]</code> = 以位置i结尾的最长回文长度</p>
+<ul>
+<li><strong>问题：</strong> 无法处理不以i结尾的回文</li>
+<li><strong>结论：</strong> 不完备</li>
+</ul>
+<p><strong>方案2：</strong> <code>dp[i][len]</code> = 从位置i开始长度为len的子串是否为回文</p>
+<ul>
+<li><strong>问题：</strong> 状态转移不够直观</li>
+<li><strong>结论：</strong> 可行但不够优雅</li>
+</ul>
+<p><strong>方案3：</strong> <code>dp[i][j]</code> = 区间[i,j]是否为回文（我们的选择）</p>
+<ul>
+<li><strong>优点：</strong> 直观、完备、转移关系清晰</li>
+<li><strong>结论：</strong> 最佳选择</li>
+</ul>
+<h3 id="状态转移的本质">状态转移的本质<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#状态转移的本质" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>核心思想：</strong> 大问题分解为小问题</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="plain" data-theme="github-light github-dark"><code data-language="plain" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>判断 s[i...j] 是否为回文</span></span>
+<span data-line><span>↓</span></span>
+<span data-line><span>检查 s[i] 和 s[j] 是否相等</span></span>
+<span data-line><span>+</span></span>
+<span data-line><span>判断 s[i+1...j-1] 是否为回文（更小的问题）</span></span></code></pre></figure>
+<p><strong>递归结构：</strong></p>
+<ul>
+<li><strong>问题规模</strong>：区间长度 <code>j - i + 1</code></li>
+<li><strong>分解方式</strong>：去掉首尾字符</li>
+<li><strong>合并方式</strong>：首尾相等 &amp;&amp; 内部是回文</li>
+</ul>
+<hr/>
+<h2 id="-常见错误及其根本原因">🔧 常见错误及其根本原因<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-常见错误及其根本原因" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="错误1计算顺序错误">错误1：计算顺序错误<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#错误1计算顺序错误" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>错误代码：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> n; i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">; j </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> n; j</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">        dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(j)) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&amp;&amp;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">];</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>问题分析：</strong></p>
+<ul>
+<li>计算 <code>dp[0][2]</code> 时需要 <code>dp[1][1]</code>（已计算）✓</li>
+<li>计算 <code>dp[0][3]</code> 时需要 <code>dp[1][2]</code>（未计算）✗</li>
+</ul>
+<p><strong>根本原因：</strong> 没有理解依赖关系</p>
+<p><strong>正确思路：</strong> 先计算小区间，再计算大区间</p>
+<h3 id="错误2边界条件处理错误">错误2：边界条件处理错误<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#错误2边界条件处理错误" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>错误代码：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(j)) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&amp;&amp;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">];</span></span></code></pre></figure>
+<p><strong>问题分析：</strong></p>
+<ul>
+<li>当 <code>j = i + 1</code> 时，<code>dp[i+1][j-1] = dp[i+1][i]</code>（无效区间）</li>
+<li>当 <code>j = i</code> 时，<code>dp[i+1][j-1] = dp[i+1][i-1]</code>（无效区间）</li>
+</ul>
+<p><strong>根本原因：</strong> 没有考虑边界情况的特殊性</p>
+<p><strong>正确思路：</strong> 分情况讨论，特殊处理短字符串</p>
+<h3 id="错误3状态定义不清晰">错误3：状态定义不清晰<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#错误3状态定义不清晰" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>模糊定义：</strong> <code>dp[i][j]</code> 表示某种回文相关的信息</p>
+<p><strong>问题：</strong></p>
+<ul>
+<li>不知道具体表示什么</li>
+<li>转移方程难以推导</li>
+<li>容易出现逻辑错误</li>
+</ul>
+<p><strong>正确做法：</strong> 精确定义状态的含义</p>
+<ul>
+<li><code>dp[i][j]</code> = 子串 <code>s[i...j]</code> 是否为回文串</li>
+<li>明确区间是闭区间 <code>[i, j]</code></li>
+<li>明确返回值的含义（true/false）</li>
+</ul>
+<hr/>
+<h2 id="-扩展其他区间dp问题的推导">🎨 扩展：其他区间DP问题的推导<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-扩展其他区间dp问题的推导" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="问题1最长回文子序列">问题1：最长回文子序列<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#问题1最长回文子序列" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>状态定义：</strong> <code>dp[i][j]</code> = 子串 <code>s[i...j]</code> 中最长回文子序列的长度</p>
+<p><strong>推导过程：</strong></p>
+<ol>
+<li><strong>观察：</strong> 子序列可以跳过某些字符</li>
+<li><strong>分类讨论：</strong>
+<ul>
+<li>如果 <code>s[i] == s[j]</code>：可以同时选择首尾字符</li>
+<li>如果 <code>s[i] != s[j]</code>：只能选择其中一个</li>
+</ul>
+</li>
+</ol>
+<p><strong>状态转移：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(i) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> s.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">charAt</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(j)) {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 首尾都选</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">} </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">else</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> {</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Math.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">max</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(dp[i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j], dp[i][j</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">]);  </span><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// 选择更优的一边</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<h3 id="问题2矩阵链乘法">问题2：矩阵链乘法<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#问题2矩阵链乘法" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>状态定义：</strong> <code>dp[i][j]</code> = 矩阵 <code>A[i]</code> 到 <code>A[j]</code> 相乘的最小代价</p>
+<p><strong>推导过程：</strong></p>
+<ol>
+<li><strong>观察：</strong> 矩阵乘法满足结合律，不同的加括号方式代价不同</li>
+<li><strong>分解：</strong> 在位置k处分割，分别计算左右两部分</li>
+<li><strong>合并：</strong> 左右两部分的代价 + 合并代价</li>
+</ol>
+<p><strong>状态转移：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> k </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i; k </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j; k</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> cost </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[i][k] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[k</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> p[i</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> p[k] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> p[j];</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Math.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">min</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(dp[i][j], cost);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<h3 id="问题3石子合并">问题3：石子合并<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#问题3石子合并" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>状态定义：</strong> <code>dp[i][j]</code> = 合并第i堆到第j堆石子的最小代价</p>
+<p><strong>推导过程：</strong></p>
+<ol>
+<li><strong>观察：</strong> 相邻的石子堆可以合并</li>
+<li><strong>分解：</strong> 在位置k处分割，先分别合并左右两部分</li>
+<li><strong>合并：</strong> 左右两部分合并后再合并成一堆</li>
+</ol>
+<p><strong>状态转移：</strong></p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="java" data-theme="github-light github-dark"><code data-language="java" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">for</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> k </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> i; k </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> j; k</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> cost </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[i][k] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> dp[k</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> sum[i][j];</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">    dp[i][j] </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Math.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;">min</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(dp[i][j], cost);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<hr/>
+<h2 id="-区间dp的通用思维模板">📚 区间DP的通用思维模板<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-区间dp的通用思维模板" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="第一步问题分析">第一步：问题分析<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第一步问题分析" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>确认是区间问题</strong>：
+<ul>
+<li>涉及连续的子数组/子串</li>
+<li>大区间的解依赖于小区间的解</li>
+<li>具有最优子结构</li>
+</ul>
+</li>
+<li><strong>找到递归结构</strong>：
+<ul>
+<li>如何将大区间分解为小区间？</li>
+<li>分解后如何合并结果？</li>
+</ul>
+</li>
+</ol>
+<h3 id="第二步状态设计">第二步：状态设计<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第二步状态设计" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>状态定义</strong>：
+<ul>
+<li><code>dp[i][j]</code> 表示区间 <code>[i, j]</code> 的某种性质</li>
+<li>明确区间的含义（开区间/闭区间）</li>
+<li>明确状态值的含义</li>
+</ul>
+</li>
+<li><strong>状态维度</strong>：
+<ul>
+<li>通常是二维：起始位置和结束位置</li>
+<li>有时需要额外维度（如分割点数量）</li>
+</ul>
+</li>
+</ol>
+<h3 id="第三步转移方程">第三步：转移方程<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第三步转移方程" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>分类讨论</strong>：
+<ul>
+<li>根据区间的特点进行分类</li>
+<li>考虑边界情况</li>
+</ul>
+</li>
+<li><strong>递归关系</strong>：
+<ul>
+<li>大区间如何由小区间得到</li>
+<li>注意依赖关系的正确性</li>
+</ul>
+</li>
+</ol>
+<h3 id="第四步计算顺序">第四步：计算顺序<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第四步计算顺序" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>依赖分析</strong>：
+<ul>
+<li><code>dp[i][j]</code> 依赖哪些状态？</li>
+<li>确保被依赖的状态先计算</li>
+</ul>
+</li>
+<li><strong>循环设计</strong>：
+<ul>
+<li>按区间长度递增</li>
+<li>或按对角线顺序</li>
+</ul>
+</li>
+</ol>
+<h3 id="第五步边界处理">第五步：边界处理<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第五步边界处理" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>基础情况</strong>：
+<ul>
+<li>长度为1的区间</li>
+<li>长度为2的区间</li>
+<li>空区间（如果需要）</li>
+</ul>
+</li>
+<li><strong>特殊情况</strong>：
+<ul>
+<li>无效区间的处理</li>
+<li>边界越界的检查</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2 id="-学习建议与总结">💡 学习建议与总结<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#-学习建议与总结" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="掌握区间dp的关键步骤">掌握区间DP的关键步骤<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#掌握区间dp的关键步骤" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>从具体例子开始</strong>：
+<ul>
+<li>手工模拟小规模问题</li>
+<li>观察规律和递归结构</li>
+<li>理解问题的本质</li>
+</ul>
+</li>
+<li><strong>逐步抽象</strong>：
+<ul>
+<li>从递归到记忆化</li>
+<li>从记忆化到DP</li>
+<li>从DP到优化</li>
+</ul>
+</li>
+<li><strong>重视推导过程</strong>：
+<ul>
+<li>不要死记硬背状态转移方程</li>
+<li>理解每一步的逻辑</li>
+<li>能够独立推导出来</li>
+</ul>
+</li>
+</ol>
+<h3 id="常见学习误区">常见学习误区<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#常见学习误区" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>过于关注代码实现</strong>：
+<ul>
+<li>应该先理解思路，再写代码</li>
+<li>思路清晰了，代码自然就对了</li>
+</ul>
+</li>
+<li><strong>忽视边界条件</strong>：
+<ul>
+<li>边界条件往往是出错的重灾区</li>
+<li>要仔细分析每种情况</li>
+</ul>
+</li>
+<li><strong>不理解计算顺序</strong>：
+<ul>
+<li>计算顺序错误会导致使用未初始化的值</li>
+<li>要理解依赖关系</li>
+</ul>
+</li>
+</ol>
+<h3 id="练习建议">练习建议<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#练习建议" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>从简单问题开始</strong>：
+<ul>
+<li>回文串判断</li>
+<li>最长回文子串</li>
+<li>最长回文子序列</li>
+</ul>
+</li>
+<li><strong>逐步增加难度</strong>：
+<ul>
+<li>矩阵链乘法</li>
+<li>石子合并</li>
+<li>戳气球</li>
+</ul>
+</li>
+<li><strong>总结通用模板</strong>：
+<ul>
+<li>提取共同的思维模式</li>
+<li>形成自己的解题框架</li>
+</ul>
+</li>
+</ol>
+<h3 id="面试应对策略">面试应对策略<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#面试应对策略" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ol>
+<li><strong>展示思维过程</strong>：
+<ul>
+<li>从具体例子开始分析</li>
+<li>逐步抽象出一般规律</li>
+<li>说明状态设计的理由</li>
+</ul>
+</li>
+<li><strong>处理边界情况</strong>：
+<ul>
+<li>主动考虑特殊情况</li>
+<li>解释为什么需要特殊处理</li>
+<li>确保代码的健壮性</li>
+</ul>
+</li>
+<li><strong>分析复杂度</strong>：
+<ul>
+<li>时间复杂度：通常是O(n³)</li>
+<li>空间复杂度：通常是O(n²)</li>
+<li>讨论可能的优化方向</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<p>*<strong>� 总结：</strong> 区间DP的核心在于理解问题的递归结构，通过合理的状态设计和转移方程，将复杂问题分解为简单的子问题。掌握了推导过程，你就能够独立解决各种区间DP问题，而不是依赖于记忆特定的模板。记住：<strong>理解比记忆更重要，推导比背诵更有效！</strong></p>
+<blockquote>
+<p>更新: 2025-08-25 19:01:27<br/>
+原文: <a href="https://www.yuque.com/zhangshun-xxqvr/vg2bou/a567f70be744d05a75ddce543af6c18d" class="external">https://www.yuque.com/zhangshun-xxqvr/vg2bou/a567f70be744d05a75ddce543af6c18d<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+</blockquote></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="graph"><h3>Graph View</h3><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 55 55" fill="currentColor" xml:space="preserve"><path d="M49,0c-3.309,0-6,2.691-6,6c0,1.035,0.263,2.009,0.726,2.86l-9.829,9.829C32.542,17.634,30.846,17,29,17
+                s-3.542,0.634-4.898,1.688l-7.669-7.669C16.785,10.424,17,9.74,17,9c0-2.206-1.794-4-4-4S9,6.794,9,9s1.794,4,4,4
+                c0.74,0,1.424-0.215,2.019-0.567l7.669,7.669C21.634,21.458,21,23.154,21,25s0.634,3.542,1.688,4.897L10.024,42.562
+                C8.958,41.595,7.549,41,6,41c-3.309,0-6,2.691-6,6s2.691,6,6,6s6-2.691,6-6c0-1.035-0.263-2.009-0.726-2.86l12.829-12.829
+                c1.106,0.86,2.44,1.436,3.898,1.619v10.16c-2.833,0.478-5,2.942-5,5.91c0,3.309,2.691,6,6,6s6-2.691,6-6c0-2.967-2.167-5.431-5-5.91
+                v-10.16c1.458-0.183,2.792-0.759,3.898-1.619l7.669,7.669C41.215,39.576,41,40.26,41,41c0,2.206,1.794,4,4,4s4-1.794,4-4
+                s-1.794-4-4-4c-0.74,0-1.424,0.215-2.019,0.567l-7.669-7.669C36.366,28.542,37,26.846,37,25s-0.634-3.542-1.688-4.897l9.665-9.665
+                C46.042,11.405,47.451,12,49,12c3.309,0,6-2.691,6-6S52.309,0,49,0z M11,9c0-1.103,0.897-2,2-2s2,0.897,2,2s-0.897,2-2,2
+                S11,10.103,11,9z M6,51c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S8.206,51,6,51z M33,49c0,2.206-1.794,4-4,4s-4-1.794-4-4
+                s1.794-4,4-4S33,46.794,33,49z M29,31c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S32.309,31,29,31z M47,41c0,1.103-0.897,2-2,2
+                s-2-0.897-2-2s0.897-2,2-2S47,39.897,47,41z M49,10c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S51.206,10,49,10z"></path></svg></button></div><div class="global-graph-outer"><div class="global-graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:-1,&quot;scale&quot;:0.9,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.2,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:true,&quot;enableRadial&quot;:true}"></div></div></div><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-28" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-1" class="toc-content overflow"><li class="depth-0"><a href="#573-区间dp推导过程详解-从具体到抽象的思维训练-java版本" data-for="573-区间dp推导过程详解-从具体到抽象的思维训练-java版本">5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本</a></li><li class="depth-0"><a href="#573-区间dp推导过程详解-从具体到抽象的思维训练-java版本-1" data-for="573-区间dp推导过程详解-从具体到抽象的思维训练-java版本-1">5.7.3 区间DP推导过程详解-从具体到抽象的思维训练-Java版本</a></li><li class="depth-1"><a href="#-为什么需要这个文档" data-for="-为什么需要这个文档">📋 为什么需要这个文档？</a></li><li class="depth-1"><a href="#-从一个具体例子开始" data-for="-从一个具体例子开始">🎯 从一个具体例子开始</a></li><li class="depth-2"><a href="#问题判断字符串-aba-是否为回文" data-for="问题判断字符串-aba-是否为回文">问题：判断字符串 “aba” 是否为回文</a></li><li class="depth-2"><a href="#关键洞察回文的递归性质" data-for="关键洞察回文的递归性质">关键洞察：回文的递归性质</a></li><li class="depth-1"><a href="#-从递归到动态规划的思维转换" data-for="-从递归到动态规划的思维转换">🔍 从递归到动态规划的思维转换</a></li><li class="depth-2"><a href="#第一步写出递归函数" data-for="第一步写出递归函数">第一步：写出递归函数</a></li><li class="depth-2"><a href="#第二步发现重复子问题" data-for="第二步发现重复子问题">第二步：发现重复子问题</a></li><li class="depth-2"><a href="#第三步引入记忆化" data-for="第三步引入记忆化">第三步：引入记忆化</a></li><li class="depth-2"><a href="#第四步转换为自底向上的dp" data-for="第四步转换为自底向上的dp">第四步：转换为自底向上的DP</a></li><li class="depth-1"><a href="#-状态定义的思维过程" data-for="-状态定义的思维过程">💡 状态定义的思维过程</a></li><li class="depth-2"><a href="#思维路径1从问题出发" data-for="思维路径1从问题出发">思维路径1：从问题出发</a></li><li class="depth-2"><a href="#思维路径2从递归关系出发" data-for="思维路径2从递归关系出发">思维路径2：从递归关系出发</a></li><li class="depth-2"><a href="#思维路径3从子问题结构出发" data-for="思维路径3从子问题结构出发">思维路径3：从子问题结构出发</a></li><li class="depth-1"><a href="#-状态转移方程的详细推导" data-for="-状态转移方程的详细推导">🔄 状态转移方程的详细推导</a></li><li class="depth-2"><a href="#第一步列出所有情况" data-for="第一步列出所有情况">第一步：列出所有情况</a></li><li class="depth-2"><a href="#第二步合并边界情况" data-for="第二步合并边界情况">第二步：合并边界情况</a></li><li class="depth-2"><a href="#第三步理解为什么需要特殊处理" data-for="第三步理解为什么需要特殊处理">第三步：理解为什么需要特殊处理</a></li><li class="depth-1"><a href="#-计算顺序的可视化推导" data-for="-计算顺序的可视化推导">📊 计算顺序的可视化推导</a></li><li class="depth-2"><a href="#依赖关系图" data-for="依赖关系图">依赖关系图</a></li><li class="depth-2"><a href="#计算顺序方案" data-for="计算顺序方案">计算顺序方案</a></li><li class="depth-1"><a href="#-完整的思维过程演示" data-for="-完整的思维过程演示">🎯 完整的思维过程演示</a></li><li class="depth-2"><a href="#例子字符串-babad" data-for="例子字符串-babad">例子：字符串 “babad”</a></li><li class="depth-1"><a href="#-深入理解为什么这样设计状态" data-for="-深入理解为什么这样设计状态">🧠 深入理解：为什么这样设计状态？</a></li><li class="depth-2"><a href="#状态设计的原则" data-for="状态设计的原则">状态设计的原则</a></li><li class="depth-2"><a href="#其他可能的状态设计" data-for="其他可能的状态设计">其他可能的状态设计</a></li><li class="depth-2"><a href="#状态转移的本质" data-for="状态转移的本质">状态转移的本质</a></li><li class="depth-1"><a href="#-常见错误及其根本原因" data-for="-常见错误及其根本原因">🔧 常见错误及其根本原因</a></li><li class="depth-2"><a href="#错误1计算顺序错误" data-for="错误1计算顺序错误">错误1：计算顺序错误</a></li><li class="depth-2"><a href="#错误2边界条件处理错误" data-for="错误2边界条件处理错误">错误2：边界条件处理错误</a></li><li class="depth-2"><a href="#错误3状态定义不清晰" data-for="错误3状态定义不清晰">错误3：状态定义不清晰</a></li><li class="depth-1"><a href="#-扩展其他区间dp问题的推导" data-for="-扩展其他区间dp问题的推导">🎨 扩展：其他区间DP问题的推导</a></li><li class="depth-2"><a href="#问题1最长回文子序列" data-for="问题1最长回文子序列">问题1：最长回文子序列</a></li><li class="depth-2"><a href="#问题2矩阵链乘法" data-for="问题2矩阵链乘法">问题2：矩阵链乘法</a></li><li class="depth-2"><a href="#问题3石子合并" data-for="问题3石子合并">问题3：石子合并</a></li><li class="depth-1"><a href="#-区间dp的通用思维模板" data-for="-区间dp的通用思维模板">📚 区间DP的通用思维模板</a></li><li class="depth-2"><a href="#第一步问题分析" data-for="第一步问题分析">第一步：问题分析</a></li><li class="depth-2"><a href="#第二步状态设计" data-for="第二步状态设计">第二步：状态设计</a></li><li class="depth-2"><a href="#第三步转移方程" data-for="第三步转移方程">第三步：转移方程</a></li><li class="depth-2"><a href="#第四步计算顺序" data-for="第四步计算顺序">第四步：计算顺序</a></li><li class="depth-2"><a href="#第五步边界处理" data-for="第五步边界处理">第五步：边界处理</a></li><li class="depth-1"><a href="#-学习建议与总结" data-for="-学习建议与总结">💡 学习建议与总结</a></li><li class="depth-2"><a href="#掌握区间dp的关键步骤" data-for="掌握区间dp的关键步骤">掌握区间DP的关键步骤</a></li><li class="depth-2"><a href="#常见学习误区" data-for="常见学习误区">常见学习误区</a></li><li class="depth-2"><a href="#练习建议" data-for="练习建议">练习建议</a></li><li class="depth-2"><a href="#面试应对策略" data-for="面试应对策略">面试应对策略</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="../../postscript.js" type="module" data-persist="true"></script></html>

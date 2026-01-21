@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>shun.doc</title>
+      <link>https://zhangshun2.github.io/shun-doc</link>
+      <description>Last 10 notes on shun.doc</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>README</title>
+    <link>https://zhangshun2.github.io/shun-doc/README</link>
+    <guid>https://zhangshun2.github.io/shun-doc/README</guid>
+    <description><![CDATA[ shun.doc 这是我的学习笔记站点首页入口，内容按专题与目录组织。 快速入口 热门百题首页 题库与索引 学习方法 搜索与回溯 单调栈 专题导航 数组专题 字符串专题 动态规划专题 二叉树专题 链表专题 栈专题 栈和哈希表 基础认知 算法优化思想 其他 学习产出 框架 QA trae话术 . ]]></description>
+    <pubDate>Wed, 21 Jan 2026 15:06:38 GMT</pubDate>
+  </item><item>
+    <title>index</title>
+    <link>https://zhangshun2.github.io/shun-doc/</link>
+    <guid>https://zhangshun2.github.io/shun-doc/</guid>
+    <description><![CDATA[ shun.doc 这是我的学习笔记站点首页入口，内容按专题与目录组织。 快速入口 热门百题首页 题库与索引 学习方法 搜索与回溯 单调栈 专题导航 数组专题 字符串专题 动态规划专题 二叉树专题 链表专题 栈专题 栈和哈希表 基础认知 算法优化思想 其他 学习产出 框架 QA trae话术 . ]]></description>
+    <pubDate>Wed, 21 Jan 2026 15:06:38 GMT</pubDate>
+  </item><item>
+    <title>4. LeetCode热题100专题分组</title>
+    <link>https://zhangshun2.github.io/shun-doc/%E9%A2%98/4.-LeetCode%E7%83%AD%E9%A2%98100%E4%B8%93%E9%A2%98%E5%88%86%E7%BB%84</link>
+    <guid>https://zhangshun2.github.io/shun-doc/%E9%A2%98/4.-LeetCode%E7%83%AD%E9%A2%98100%E4%B8%93%E9%A2%98%E5%88%86%E7%BB%84</guid>
+    <description><![CDATA[ LeetCode 热题 100 首页 官方题单：leetcode.cn/studyplan/top-100-liked/ 数组与哈希 题号题目难度链接1两数之和简单🔗 ｜ 📄11盛最多水的容器中等🔗15三数之和中等🔗41缺失的第一个正数困难🔗48旋转图像中等🔗49字母异位词分组中等🔗53最大子数组和中等🔗54螺旋矩阵中等🔗55跳跃游戏中等🔗56合并区间中等🔗73矩阵置零中等🔗75颜色分类中等🔗121买卖股票的最佳时机简单🔗128最长连续序列中等🔗136只出现一次的数字简单🔗169多数元素简单🔗189轮转数组中等🔗215数组中的第 K 个最大元素中等🔗238... ]]></description>
+    <pubDate>Wed, 21 Jan 2026 15:06:38 GMT</pubDate>
+  </item><item>
+    <title>两数之和 目录</title>
+    <link>https://zhangshun2.github.io/shun-doc/%E9%A2%98%E7%9B%AE%E5%88%97%E8%A1%A8/%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C-%E7%9B%AE%E5%BD%95</link>
+    <guid>https://zhangshun2.github.io/shun-doc/%E9%A2%98%E7%9B%AE%E5%88%97%E8%A1%A8/%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C-%E7%9B%AE%E5%BD%95</guid>
+    <description><![CDATA[ 两数之和 题目链接：leetcode.cn/problems/two-sum/ 首页链接：../题/4. ]]></description>
+    <pubDate>Wed, 21 Jan 2026 15:06:38 GMT</pubDate>
+  </item><item>
+    <title>QA_0923</title>
+    <link>https://zhangshun2.github.io/shun-doc/QA/QA_0923</link>
+    <guid>https://zhangshun2.github.io/shun-doc/QA/QA_0923</guid>
+    <description><![CDATA[ 1. ]]></description>
+    <pubDate>Wed, 21 Jan 2026 07:36:33 GMT</pubDate>
+  </item><item>
+    <title>QA导航</title>
+    <link>https://zhangshun2.github.io/shun-doc/QA/QA%E5%AF%BC%E8%88%AA</link>
+    <guid>https://zhangshun2.github.io/shun-doc/QA/QA%E5%AF%BC%E8%88%AA</guid>
+    <description><![CDATA[ QA导航 文档 QA_0923.md . ]]></description>
+    <pubDate>Wed, 21 Jan 2026 07:36:33 GMT</pubDate>
+  </item><item>
+    <title>README.en</title>
+    <link>https://zhangshun2.github.io/shun-doc/README.en</link>
+    <guid>https://zhangshun2.github.io/shun-doc/README.en</guid>
+    <description><![CDATA[ doc-study-V1 Table of Contents (TOC) Description Document Naming Convention Directory Overview (partial) Quick Navigation Usage Contribution License Description This repository collects daily study notes on algorithms and CS fundamentals, with a focus on topics like Monotonic Stack, Stack &amp; Hash... ]]></description>
+    <pubDate>Wed, 21 Jan 2026 07:36:33 GMT</pubDate>
+  </item><item>
+    <title>project_rules</title>
+    <link>https://zhangshun2.github.io/shun-doc/project_rules</link>
+    <guid>https://zhangshun2.github.io/shun-doc/project_rules</guid>
+    <description><![CDATA[ 项目规则（project_rules.md） 本规范用于约束与指导智能体在本项目中的对话思考与文档整理方式，确保内容结构统一、命名一致、链接可达与可维护。 1. ]]></description>
+    <pubDate>Wed, 21 Jan 2026 07:36:33 GMT</pubDate>
+  </item><item>
+    <title>trae话术导航</title>
+    <link>https://zhangshun2.github.io/shun-doc/trae%E8%AF%9D%E6%9C%AF/trae%E8%AF%9D%E6%9C%AF%E5%AF%BC%E8%88%AA</link>
+    <guid>https://zhangshun2.github.io/shun-doc/trae%E8%AF%9D%E6%9C%AF/trae%E8%AF%9D%E6%9C%AF%E5%AF%BC%E8%88%AA</guid>
+    <description><![CDATA[ trae话术导航 （该目录暂无直接内容）. ]]></description>
+    <pubDate>Wed, 21 Jan 2026 07:36:33 GMT</pubDate>
+  </item><item>
+    <title>4.1.10二叉树专题(6-10题)-Java版本</title>
+    <link>https://zhangshun2.github.io/shun-doc/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/4.1.10%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98(6-10%E9%A2%98)-Java%E7%89%88%E6%9C%AC</link>
+    <guid>https://zhangshun2.github.io/shun-doc/%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98/4.1.10%E4%BA%8C%E5%8F%89%E6%A0%91%E4%B8%93%E9%A2%98(6-10%E9%A2%98)-Java%E7%89%88%E6%9C%AC</guid>
+    <description><![CDATA[ 4.1.10 二叉树专题(6-10题)-Java版本 4.1.10 二叉树专题(6-10题) - Java版本 本文档包含LeetCode热题100中二叉树专题的第6-10道题目，提供基础解法和进阶优化版本 📊 题目概览 题号题目难度标签102二叉树的层序遍历🟡 中等树, 广度优先搜索, 二叉树108将有序数组转换为二叉搜索树🟢 简单树, 二叉搜索树, 数组, 分治, 二叉树98验证二叉搜索树🟡 中等树, 深度优先搜索, 二叉搜索树, 二叉树230二叉搜索树中第K小的元素🟡 中等树, 深度优先搜索, 二叉搜索树, 二叉树199二叉树的右视图🟡 中等树, 深度优先搜索, 广度优先搜索... ]]></description>
+    <pubDate>Wed, 21 Jan 2026 07:36:33 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>
